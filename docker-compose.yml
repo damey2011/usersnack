@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+      target: app
+    restart: unless-stopped
+    env_file:
+      - .env.${ENV:-local}
+      - .env
+
+  db:
+    image: postgres:15
+    env_file:
+      - .env.${ENV:-local}
+      - .env
+    ports:
+      - "5438:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+
+
+volumes:
+  postgres_data:

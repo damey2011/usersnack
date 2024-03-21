@@ -1,0 +1,24 @@
+[tool.poetry]
+name = "saas-group"
+version = "0.1.0"
+description = ""
+authors = ["Damilola Adeyemi <adeyemidamilola3@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.11"
+fastapi = "^0.110.0"
+uvicorn = "^0.28.1"
+tortoise-orm = {extras = ["asyncpg"], version = "^0.20.0"}
+aerich = "^0.7.2"
+pydantic-settings = "^2.2.1"
+tenacity = "^8.2.3"
+
+[tool.aerich]
+tortoise_orm = "settings.TORTOISE_ORM"
+location = "./migrations"
+src_folder = "./."
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
