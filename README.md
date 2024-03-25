@@ -103,7 +103,8 @@ You can set up the project on a single node machine with docker.
 
 - Clone the project
 - Copy `.env.sample` to `.env` and set the values as necessary.
-- Modify `HOST_DOMAIN` environment in the `caddy` service of `docker-compose.yml`; set to your domain.
+- Modify `HOST_DOMAIN` environment in the `caddy` service of `docker-compose.yml`; set to your domain, and ensure that 
+the domain is equally pointing to your remote machine IP address.
 - Run `docker-compose.yml`.
 - Your API documentation should be accessible over `https://<your-domain>/docs`, and media over `https://<your-domain>/media/<path-to-media>`
 
