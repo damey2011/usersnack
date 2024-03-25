@@ -25,7 +25,7 @@ async def save_pizzas(pizzas: List[Dict[str, str]]) -> None:
         created_pizza = await Pizza.create(
             name=pizza["name"],
             price=Decimal(pizza["price"]),
-            images=[pizza["img"]],
+            images=[f"{settings.MEDIA_PATH_PREFIX}/pizzas/{pizza['img']}"],
         )
         await created_pizza.ingredients.add(
             *list(filter(lambda ing: ing.name in pizza["ingredients"], ingredients))
