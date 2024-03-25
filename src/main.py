@@ -43,7 +43,7 @@ app.add_exception_handler(RequestValidationError, handle_validation_exception)
 app.add_exception_handler(ValidationError, handle_validation_exception)
 app.add_exception_handler(ObjectNotFoundError, handle_object_not_found)
 
-app.include_router(v1_router)
+app.include_router(v1_router, prefix="/v1")
 
 if settings.ENV != Environment.PRODUCTION:
     app.mount(settings.MEDIA_PATH_PREFIX, StaticFiles(directory="media"), name="media")

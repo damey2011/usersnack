@@ -8,7 +8,7 @@ from db_models.snacks import Pizza
 
 @pytest.mark.asyncio
 async def test_pizzas_list_returns_valid_list(client: AsyncClient) -> None:
-    response = await client.get("/pizzas")
+    response = await client.get("/v1/pizzas")
     assert response.status_code == 200
 
     data = response.json()
@@ -26,11 +26,11 @@ async def test_pizzas_list_returns_valid_list(client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_pizzas_list_pagination_works(client: AsyncClient) -> None:
-    response = await client.get("/pizzas", params={"offset": 0, "limit": 10})
+    response = await client.get("/v1/pizzas", params={"offset": 0, "limit": 10})
     assert response.status_code == 200
     data1 = response.json()
 
-    response = await client.get("/pizzas", params={"offset": 10, "limit": 10})
+    response = await client.get("/v1/pizzas", params={"offset": 10, "limit": 10})
     assert response.status_code == 200
     data2 = response.json()
 
@@ -41,7 +41,7 @@ async def test_pizzas_list_pagination_works(client: AsyncClient) -> None:
 
 @pytest.mark.asyncio
 async def test_can_search_pizza_by_name(client: AsyncClient) -> None:
-    response = await client.get("/pizzas", params={"name": "Chicken"})
+    response = await client.get("/v1/pizzas", params={"name": "Chicken"})
     assert response.status_code == 200
     data = response.json()
 
@@ -53,7 +53,7 @@ async def test_can_search_pizza_by_name(client: AsyncClient) -> None:
 async def test_can_retrieve_single_pizza(client: AsyncClient) -> None:
     pizza = await Pizza.all().first()
 
-    response = await client.get(f"/pizzas/{pizza.id}")
+    response = await client.get(f"/v1/pizzas/{pizza.id}")
     assert response.status_code == 200
     data = response.json()
 

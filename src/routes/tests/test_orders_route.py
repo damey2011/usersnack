@@ -42,7 +42,7 @@ async def test_that_valid_order_can_be_created(client: AsyncClient) -> None:
         pizza_quantity=pizza_quantity,
     )
 
-    response = await client.post("/orders", json=order_in)
+    response = await client.post("/v1/orders", json=order_in)
     assert response.status_code == 201
 
     data = response.json()
@@ -107,5 +107,5 @@ async def test_that_valid_order_with_invalid_field_cannot_be_created(
 
     order_in = build_order_in(pizza, extras)
 
-    response = await client.post("/orders", json={**order_in, **override_field})
+    response = await client.post("/v1/orders", json={**order_in, **override_field})
     assert response.status_code == 422
