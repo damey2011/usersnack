@@ -65,6 +65,8 @@ docker compose exec app python scripts/load_fixtures.py
 Once started up, ideally, you should be able to access the project documentation over http://localhost:8000/docs 
 if no custom port settings were done.
 
+![Alt text](media/docs.png "UserSnap API Documentation")
+
 ## 🥷🏼 Linting & Formatting
 [Flake8](https://flake8.pycqa.org/en/latest/) is used for linting while [Black](https://github.com/psf/black) is used 
 for code formatting. To run both respectively:

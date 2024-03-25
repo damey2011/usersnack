@@ -29,7 +29,7 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
     await Tortoise.close_connections()
 
 
-app = FastAPI(responses=responses, lifespan=lifespan)
+app = FastAPI(responses=responses, lifespan=lifespan, title="Usersnack")
 
 app.add_middleware(
     CORSMiddleware,
