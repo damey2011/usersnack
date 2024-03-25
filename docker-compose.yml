@@ -35,7 +35,7 @@ services:
       MEDIA_ROOT: /var/media
     volumes:
       - $PWD/Caddyfile:/etc/caddy/Caddyfile
-      - media:/var/media
+      - media:/var/media:ro
 
 volumes:
   media:
