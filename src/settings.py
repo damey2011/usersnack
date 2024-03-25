@@ -26,7 +26,7 @@ class Settings(BaseSettings):
     POSTGRES_PASSWORD: str
     POSTGRES_PORT: int
 
-    STATIC_BASE_URL: str = "localhost:8002"
+    MEDIA_PATH_PREFIX: str = "/media"
 
     TORTOISE_ORM_MODELS: List[str] = [
         "db_models.snacks",

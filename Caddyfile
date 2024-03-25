@@ -1,0 +1,18 @@
+{
+    acme_ca https://acme{$([[ "$ENV" == 'prod' ]] && echo '' || echo '-staging' )}-v02.api.letsencrypt.org/directory
+    admin   off
+    email   admin@pressone.co
+}
+
+{$HOST_DOMAIN} {
+    encode gzip
+
+    handle /media {
+        root * {$MEDIA_ROOT}
+        file_server
+    }
+
+    handle * {
+        reverse_proxy {$REVERSE_PROXY_TO}
+    }
+}

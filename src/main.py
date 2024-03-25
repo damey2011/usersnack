@@ -45,5 +45,5 @@ app.add_exception_handler(ObjectNotFoundError, handle_object_not_found)
 
 app.include_router(v1_router)
 
-if not settings.ENV != Environment.PRODUCTION:
-    app.mount("/media", StaticFiles(directory="media"), name="media")
+if settings.ENV != Environment.PRODUCTION:
+    app.mount(settings.MEDIA_PATH_PREFIX, StaticFiles(directory="media"), name="media")

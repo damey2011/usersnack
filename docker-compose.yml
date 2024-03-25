@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
       target: app
     restart: unless-stopped
+    volumes:
+      - media:/app/media/
     ports:
       - "8000:8000"
     env_file:
@@ -24,6 +26,17 @@ services:
 
   caddy:
     image: caddy:latest
+    ports:
+      - "80:80"
+      - "443:443"
+    environment:
+      HOST_DOMAIN: usersnack.dammy.co
+      REVERSE_PROXY_TO: app:8000
+      MEDIA_ROOT: /var/media
+    volumes:
+      - $PWD/Caddyfile:/etc/caddy/Caddyfile
+      - media:/var/media
 
 volumes:
+  media:
   postgres_data:
