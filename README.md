@@ -10,13 +10,13 @@ complex database queries and do easy mocking as scale during unit tests.
 ## 💻 Development Setup
 - Copy `.env.sample` to `.env` and set the values as necessary.
 
-### 1️⃣ All in Docker Compose
+### 1️⃣ (Option 1) All in Docker Compose
 Run:
 ```shell
 docker compose up
 ```
 
-### 2️⃣ App outside of Docker
+### 2️⃣ (Option 2) App outside of Docker
 This could be useful if you need to attach a debugger to your application. As a requirement, you'd need to have 
 [Poetry](https://python-poetry.org/) installed. Then you may follow the steps:
 
@@ -103,11 +103,12 @@ You can set up the project on a single node machine with docker.
 
 - Clone the project
 - Copy `.env.sample` to `.env` and set the values as necessary.
+- Set `ENV` to `prod`, so the application loads the correct configurations.
 - Modify `HOST_DOMAIN` environment in the `caddy` service of `docker-compose.yml`; set to your domain, and ensure that 
 the domain is equally pointing to your remote machine IP address.
 - Run [migrations](#-migrations) and [seed data](#-seed-data) as specified above.
 - Your API documentation should be accessible over `https://<your-domain>/docs`, and media over `https://<your-domain>/media/<path-to-media>`.
-- 
+
 
 ## 🪡 Improvements / Scale Production
 - Phone number validation
