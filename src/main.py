@@ -1,17 +1,19 @@
-import sys
-from typing import Any, Dict, Union
+from contextlib import asynccontextmanager
+from typing import Any, AsyncGenerator, Dict, Union
 
 from fastapi import FastAPI
 from fastapi.exceptions import RequestValidationError
-from pydantic import ValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from tortoise.contrib.fastapi import register_tortoise
+from pydantic import ValidationError
+from starlette.staticfiles import StaticFiles
+from tortoise import Tortoise
 
-from exception_handlers import handle_object_not_found, handle_validation_exception
+from exception_handlers import (handle_object_not_found,
+                                handle_validation_exception)
 from exceptions import ObjectNotFoundError
 from routes.v1 import v1_router
-from schemas import UserSnackErrorResponse
-from settings import settings
+from schemas.shared import UserSnackErrorResponse
+from settings import Environment, TORTOISE_ORM, settings
 
 responses: Dict[Union[str, int], Dict[str, Any]] = {
     400: {"model": UserSnackErrorResponse, "description": "Bad Request"},
@@ -19,17 +21,15 @@ responses: Dict[Union[str, int], Dict[str, Any]] = {
     422: {"model": UserSnackErrorResponse, "description": "Validation Error"},
 }
 
-app = FastAPI(
-    responses=responses
-)
 
-register_tortoise(
-    app,
-    db_url=str(settings.get_postgres_dsn()),
-    modules={
-        "models": settings.TORTOISE_ORM_MODELS
-    }
-)
+@asynccontextmanager
+async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+    await Tortoise.init(config=TORTOISE_ORM)
+    yield
+    await Tortoise.close_connections()
+
+
+app = FastAPI(responses=responses, lifespan=lifespan)
 
 app.add_middleware(
     CORSMiddleware,
@@ -45,24 +45,5 @@ app.add_exception_handler(ObjectNotFoundError, handle_object_not_found)
 
 app.include_router(v1_router)
 
-
-# DEBUG
-
-import logging
-
-fmt = logging.Formatter(
-    fmt="%(asctime)s - %(name)s:%(lineno)d - %(levelname)s - %(message)s",
-    datefmt="%Y-%m-%d %H:%M:%S",
-)
-sh = logging.StreamHandler(sys.stdout)
-sh.setLevel(logging.DEBUG)
-sh.setFormatter(fmt)
-
-# will print debug sql
-logger_db_client = logging.getLogger("tortoise.db_client")
-logger_db_client.setLevel(logging.DEBUG)
-logger_db_client.addHandler(sh)
-
-# logger_tortoise = logging.getLogger("tortoise")
-# logger_tortoise.setLevel(logging.DEBUG)
-# logger_tortoise.addHandler(sh)
+if not settings.ENV != Environment.PRODUCTION:
+    app.mount("/media", StaticFiles(directory="media"), name="media")

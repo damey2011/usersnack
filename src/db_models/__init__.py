@@ -1,11 +1,12 @@
+from datetime import datetime
 from uuid import uuid4
 
 from tortoise import fields, models
 
 
 class M2MThroughBase(models.Model):
-    created_at = fields.DatetimeField(auto_now_add=True)
-    updated_at = fields.DatetimeField(auto_now=True)
+    created_at: fields.Field[datetime] = fields.DatetimeField(auto_now_add=True)
+    updated_at: fields.Field[datetime] = fields.DatetimeField(auto_now=True)
 
     class Meta:
         abstract = True

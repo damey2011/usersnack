@@ -1,11 +1,11 @@
 import asyncio
 import logging
 
-import sqlalchemy as sa
-from sqlalchemy.ext.asyncio import async_sessionmaker
-from tenacity import after_log, before_log, retry, stop_after_attempt, wait_fixed
+from tenacity import (after_log, before_log, retry, stop_after_attempt,
+                      wait_fixed)
+from tortoise import Tortoise
 
-from settings import settings
+from settings import TORTOISE_ORM
 
 logger = logging.getLogger(__name__)
 
@@ -22,45 +22,10 @@ wait_seconds = 1
 async def main() -> None:
     logger.info("Initializing service")
 
-    # Only use the superuser for the check if there's a need to grant permissions to the non-superuser
-    # This is only necessary in SHARED_DB_MODE where the default user did not create the tables
-    engine = get_database_engine(
-        settings.get_db_url(as_async=True, as_superuser=settings.SHARED_DB_MODE)
-    )
-    async_session = async_sessionmaker(engine, expire_on_commit=False)
+    await Tortoise.init(config=TORTOISE_ORM)
+    connection = Tortoise.get_connection("default")
 
-    async with async_session() as session:
-        try:
-            # Try to create session to check if DB is awake
-            await session.execute(sa.text("SELECT 1"))
-            logger.info("Database is available")
-
-            if settings.SHARED_DB_MODE:
-                # Grant all permissions to the database to the non-superuser
-                await session.execute(
-                    sa.text(f"GRANT ALL ON SCHEMA public TO {settings.DB_USER};")
-                )
-                await session.execute(
-                    sa.text(
-                        f"GRANT ALL ON ALL TABLES IN SCHEMA public TO {settings.DB_USER};"
-                    )
-                )
-                await session.execute(
-                    sa.text(
-                        f"GRANT ALL ON ALL SEQUENCES IN SCHEMA public TO {settings.DB_USER};"
-                    )
-                )
-                await session.execute(
-                    sa.text(
-                        f"GRANT ALL ON DATABASE {settings.DB_NAME} TO {settings.DB_USER};"
-                    )
-                )
-                logger.info("Granted all permissions.")
-
-            await session.close()
-        except Exception as e:
-            logger.error(e)
-            raise e
+    await connection.execute_query("SELECT 1;")
 
 
 if __name__ == "__main__":

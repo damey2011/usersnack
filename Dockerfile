@@ -5,9 +5,9 @@ RUN apk add --update --no-cache --virtual .tmp-build-deps \
 ENV POETRY_VERSION=1.7.1
 RUN pip install --no-cache-dir "poetry==$POETRY_VERSION"
 WORKDIR /app/
-ENV PYTHONPATH=/app/src
 
 FROM python-base AS app
+ENV PYTHONPATH=/app/src
 COPY pyproject.toml poetry.lock ./
 RUN poetry config virtualenvs.create false && \
     poetry install --no-root --no-interaction --no-ansi

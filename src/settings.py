@@ -16,12 +16,9 @@ class Environment(str, Enum):
 
 
 class Settings(BaseSettings):
-    model_config = SettingsConfigDict(
-        env_file=[
-            f".env.{_ENV}",
-            f".env"
-        ]
-    )
+    model_config = SettingsConfigDict(env_file=[f".env.{_ENV}", f".env"])
+
+    ENV: Environment = _ENV
 
     POSTGRES_HOST: str
     POSTGRES_DB: str
@@ -34,7 +31,7 @@ class Settings(BaseSettings):
     TORTOISE_ORM_MODELS: List[str] = [
         "db_models.snacks",
         "db_models.orders",
-        "aerich.models"
+        "aerich.models",
     ]
 
     def get_postgres_dsn(self) -> PostgresDsn:
@@ -44,7 +41,7 @@ class Settings(BaseSettings):
             port=self.POSTGRES_PORT,
             username=self.POSTGRES_USERNAME,
             password=self.POSTGRES_PASSWORD,
-            path=f"{self.POSTGRES_DB}"
+            path=f"{self.POSTGRES_DB}",
         )
 
     def get_tortoise_orm_settings(self) -> Dict[str, Any]:

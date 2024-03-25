@@ -5,3 +5,4 @@
 __pycache__
 *.pyc
 *.pyi
+.pytest_cache/

@@ -1,11 +1,27 @@
 from datetime import datetime, timezone
-from typing import Any, Dict, Generic, List, Optional, TypeVar
+from typing import Annotated, Any, Dict, Generic, List, TypeVar
 
-from pydantic import BaseModel
+from pydantic import AfterValidator, BaseModel
 
 from error_codes import UserSnackErrorCode
 
 DataObject = TypeVar("DataObject", bound=BaseModel)
+
+
+def validate_positive(num: int) -> int:
+    if num > 0:
+        return num
+    raise ValueError(f"{num} is not a positive number.")
+
+
+def validate_positive_or_zero(num: int) -> int:
+    if num >= 0:
+        return num
+    raise ValueError(f"{num} is not a positive or zero value number.")
+
+
+PositiveOrZeroInteger = Annotated[int, AfterValidator(validate_positive_or_zero)]
+PositiveInteger = Annotated[int, AfterValidator(validate_positive)]
 
 
 class PaginatedUserSnackResponse(BaseModel, Generic[DataObject]):
@@ -32,5 +48,9 @@ class UserSnackErrorResponse(BaseModel):
 
 
 class Pagination(BaseModel):
-    offset: int = 0
-    limit: int = 10
+    offset: PositiveOrZeroInteger = 0
+    limit: PositiveInteger = 10
+
+
+class GenericOrmBasedSchema(BaseModel):
+    model_config = {"from_attributes": True}

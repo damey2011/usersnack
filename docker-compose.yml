@@ -6,6 +6,8 @@ services:
       dockerfile: Dockerfile
       target: app
     restart: unless-stopped
+    ports:
+      - "8000:8000"
     env_file:
       - .env.${ENV:-local}
       - .env
@@ -20,6 +22,8 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data/
 
+  caddy:
+    image: caddy:latest
 
 volumes:
   postgres_data:
