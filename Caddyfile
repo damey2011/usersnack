@@ -1,7 +1,7 @@
 {
     acme_ca https://acme{$([[ "$ENV" == 'prod' ]] && echo '' || echo '-staging' )}-v02.api.letsencrypt.org/directory
     admin   off
-    email   admin@pressone.co
+    email   admin@dammy.co
 }
 
 {$HOST_DOMAIN} {
